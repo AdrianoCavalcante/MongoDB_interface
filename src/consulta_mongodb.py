@@ -18,7 +18,7 @@ from typing import Dict, List, Any
 from pymongo import MongoClient, errors
 from pymongo.collection import Collection
 from pymongo.database import Database
-from conexao_mongodb import conectar_mongodb, desconectar_mongodb
+from .conexao_mongodb import conectar_mongodb, desconectar_mongodb
 
 
 # ============================================================================

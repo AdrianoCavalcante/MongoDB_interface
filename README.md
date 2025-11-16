@@ -413,11 +413,16 @@ MongoDB_interface/
 │   ├── teste_consulta_mongodb.py     # Testes de queries (15+ casos)
 │   ├── teste_listar_estrutura.py     # Testes de metadados (10+ casos)
 │   └── teste_analisar_schema.py      # Testes de análise de schema
+├── data/
+│   ├── README.md                     # Documentação dos datasets
+│   └── g1_marcha_policiais_sp.json   # Dataset de exemplo (~3000 docs)
 ├── docs/
 │   └── (documentação adicional)
 ├── .gitignore
 ├── requirements.txt
 ├── conexao_mongo_secrets.example.json
+├── SECURITY.md                        # Guia de segurança
+├── CONTRIBUTING.md                    # Guia de contribuição
 ├── LICENSE
 └── README.md
 ```

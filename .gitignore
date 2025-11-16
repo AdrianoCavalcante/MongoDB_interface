@@ -76,6 +76,10 @@ logs/
 *.sqlite
 *.sqlite3
 
+# Dados (opcional - descomentar para não commitar datasets grandes)
+# data/*.json
+# !data/README.md
+
 # Sistema
 Thumbs.db
 .DS_Store

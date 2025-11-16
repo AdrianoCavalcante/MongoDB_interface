@@ -27,30 +27,38 @@ def conectar_mongodb() -> Tuple[bool, Optional[MongoClient], str]:
         >>>     print(f"Erro: {msg}")
     """
     try:
-        # Carregar credenciais do arquivo JSON
-        with open("conexao_mongo_secrets.json", 'r', encoding='utf-8') as f:
-            credenciais = json.load(f)
-        
-        # Montar connection string
-        conn_str = f"mongodb+srv://{credenciais['username']}:{credenciais['password']}@{credenciais['cluster']}/?retryWrites=true&w=majority&appName=Cluster0"
-        
+        # Tenta pegar as credenciais do Streamlit Cloud
+        try:
+            import streamlit as st
+            username = st.secrets["username"]
+            password = st.secrets["password"]
+            cluster = st.secrets["cluster"]
+            database = st.secrets["database"]
+            conn_str = f"mongodb+srv://{username}:{password}@{cluster}/{database}?retryWrites=true&w=majority"
+        except (ImportError, KeyError):
+            # Fallback: tenta ler do arquivo local (para uso local)
+            with open("conexao_mongo_secrets.json", 'r', encoding='utf-8') as f:
+                credenciais = json.load(f)
+            username = credenciais["username"]
+            password = credenciais["password"]
+            cluster = credenciais["cluster"]
+            database = credenciais["database"]
+            conn_str = f"mongodb+srv://{username}:{password}@{cluster}/{database}?retryWrites=true&w=majority"
+
         # Criar cliente MongoDB
         client = MongoClient(conn_str)
-        
+
         # Testar conexão com ping
         client.admin.command('ping')
-        
+
         return True, client, "Conexão estabelecida com sucesso"
-        
+
     except FileNotFoundError:
-        return False, None, "Arquivo de credenciais 'conexao_mongo_secrets.json' não encontrado"
-    
+        return False, None, "Arquivo de credenciais 'conexao_mongo_secrets.json' não encontrado e variáveis de ambiente não configuradas"
     except KeyError as e:
-        return False, None, f"Chave obrigatória ausente no arquivo de credenciais: {str(e)}"
-    
+        return False, None, f"Chave obrigatória ausente nas credenciais: {str(e)}"
     except errors.ConnectionFailure as e:
         return False, None, f"Falha ao conectar com MongoDB: {str(e)}"
-    
     except Exception as e:
         return False, None, f"Erro inesperado ao conectar: {type(e).__name__} - {str(e)}"
 

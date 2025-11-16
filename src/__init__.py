@@ -9,8 +9,8 @@ Módulos:
     - consulta_mongodb: Operações de consulta
 
 Exemplo de uso:
-    >>> from src.conexao_mongodb import conectar_mongodb, desconectar_mongodb
-    >>> from src.consulta_mongodb import consultar_mongodb, listar_bancos
+    >>> from src import conectar_mongodb, desconectar_mongodb
+    >>> from src import consultar_mongodb, listar_bancos
     >>> 
     >>> # Conectar
     >>> status, client, msg = conectar_mongodb()
@@ -27,8 +27,8 @@ __author__ = "MongoDB Interface Contributors"
 __license__ = "MIT"
 
 # Importações para facilitar o uso do pacote
-from src.conexao_mongodb import conectar_mongodb, desconectar_mongodb
-from src.consulta_mongodb import (
+from .conexao_mongodb import conectar_mongodb, desconectar_mongodb
+from .consulta_mongodb import (
     consultar_mongodb,
     listar_bancos,
     listar_colecoes,

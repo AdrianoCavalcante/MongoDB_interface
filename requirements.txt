@@ -1,0 +1,12 @@
+# MongoDB Interface - Dependências
+
+# Driver oficial MongoDB para Python
+pymongo>=4.0.0,<5.0.0
+
+# Dependências do PyMongo (instaladas automaticamente)
+# - dnspython>=1.16.0,<3.0.0
+
+# Opcional: para desenvolvimento e testes
+# pytest>=7.0.0  # Para testes unitários
+# black>=22.0.0  # Para formatação de código
+# mypy>=0.950    # Para type checking

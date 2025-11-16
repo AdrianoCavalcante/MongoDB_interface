@@ -132,6 +132,23 @@ def consultar_mongodb(
             elif "_count" in consulta:
                 # Count: {"_count": true, "_query": {...}}
                 filtro = consulta.get("_query", {})
+                # Conversão automática de datas (YYYY-MM-DD) para datetime
+                from datetime import datetime
+                def try_convert_date(val):
+                    if isinstance(val, str) and len(val) == 10 and val.count("-") == 2:
+                        try:
+                            return datetime.strptime(val, "%Y-%m-%d")
+                        except Exception:
+                            return val
+                    return val
+                def convert_dates(obj):
+                    if isinstance(obj, dict):
+                        return {k: convert_dates(try_convert_date(v)) for k, v in obj.items()}
+                    elif isinstance(obj, list):
+                        return [convert_dates(try_convert_date(i)) for i in obj]
+                    else:
+                        return obj
+                filtro = convert_dates(filtro)
                 contagem = collection.count_documents(filtro)
                 return json.dumps({
                     "sucesso": True,
@@ -141,6 +158,23 @@ def consultar_mongodb(
             elif "_find_one" in consulta:
                 # Find One: {"_find_one": true, "_query": {...}, "_projection": {...}}
                 filtro = consulta.get("_query", {})
+                # Conversão automática de datas
+                from datetime import datetime
+                def try_convert_date(val):
+                    if isinstance(val, str) and len(val) == 10 and val.count("-") == 2:
+                        try:
+                            return datetime.strptime(val, "%Y-%m-%d")
+                        except Exception:
+                            return val
+                    return val
+                def convert_dates(obj):
+                    if isinstance(obj, dict):
+                        return {k: convert_dates(try_convert_date(v)) for k, v in obj.items()}
+                    elif isinstance(obj, list):
+                        return [convert_dates(try_convert_date(i)) for i in obj]
+                    else:
+                        return obj
+                filtro = convert_dates(filtro)
                 projection = consulta.get("_projection", None)
                 documento = collection.find_one(filtro, projection)
                 return json.dumps({
@@ -152,26 +186,43 @@ def consultar_mongodb(
                 # Find com opções avançadas: sort, limit, skip, projection
                 # {"_find_with_options": true, "_query": {...}, "_sort": {...}, "_limit": N, "_skip": N, "_projection": {...}}
                 filtro = consulta.get("_query", {})
+                # Conversão automática de datas
+                from datetime import datetime
+                def try_convert_date(val):
+                    if isinstance(val, str) and len(val) == 10 and val.count("-") == 2:
+                        try:
+                            return datetime.strptime(val, "%Y-%m-%d")
+                        except Exception:
+                            return val
+                    return val
+                def convert_dates(obj):
+                    if isinstance(obj, dict):
+                        return {k: convert_dates(try_convert_date(v)) for k, v in obj.items()}
+                    elif isinstance(obj, list):
+                        return [convert_dates(try_convert_date(i)) for i in obj]
+                    else:
+                        return obj
+                filtro = convert_dates(filtro)
                 projection = consulta.get("_projection", None)
                 sort_fields = consulta.get("_sort", None)
                 limit = consulta.get("_limit", 0)
                 skip = consulta.get("_skip", 0)
-                
+
                 cursor = collection.find(filtro, projection)
-                
+
                 if sort_fields:
                     # sort_fields pode ser: {"campo": 1} ou [("campo", 1), ("campo2", -1)]
                     if isinstance(sort_fields, dict):
                         cursor = cursor.sort(list(sort_fields.items()))
                     else:
                         cursor = cursor.sort(sort_fields)
-                
+
                 if skip > 0:
                     cursor = cursor.skip(skip)
-                
+
                 if limit > 0:
                     cursor = cursor.limit(limit)
-                
+
                 documentos = list(cursor)
                 return json.dumps({
                     "sucesso": True,

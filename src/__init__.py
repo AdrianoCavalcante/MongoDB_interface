@@ -27,8 +27,8 @@ __author__ = "MongoDB Interface Contributors"
 __license__ = "MIT"
 
 # Importações para facilitar o uso do pacote
-from .conexao_mongodb import conectar_mongodb, desconectar_mongodb
-from .consulta_mongodb import (
+from src.conexao_mongodb import conectar_mongodb, desconectar_mongodb
+from src.consulta_mongodb import (
     consultar_mongodb,
     listar_bancos,
     listar_colecoes,

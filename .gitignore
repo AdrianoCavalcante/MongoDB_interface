@@ -1,5 +1,6 @@
 # Arquivo de credenciais MongoDB (NUNCA COMMITAR!)
 conexao_mongo_secrets.json
+dados conexão do Mongo DB.txt
 
 # Ambientes virtuais Python
 venv/

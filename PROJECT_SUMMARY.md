@@ -23,15 +23,26 @@ MongoDB_interface/
 │   ├── teste_listar_estrutura.py      # 10+ testes de metadados
 │   └── teste_analisar_schema.py       # Testes de análise de schema
 │
+├── data/                         # Datasets de exemplo
+│   ├── README.md                     # Documentação dos datasets
+│   ├── g1_marcha_policiais_sp.json   # Dataset de exemplo (~3000 docs)
+│   └── Criacao_bases_mongo_cloud.ipynb  # Notebook de criação de bases
+│
 ├── docs/                         # Documentação adicional
+│   ├── ANALISE_CONSULTA_MONGODB.md   # Análise técnica do módulo
+│   └── Artigo_MongoDB_eBay_ABNT.txt  # Artigo acadêmico sobre MongoDB
 │
 ├── README.md                     # Documentação principal (500+ linhas)
 ├── CONTRIBUTING.md               # Guia de contribuição
 ├── GITHUB_SETUP.md              # Instruções para publicar no GitHub
+├── PROJECT_SUMMARY.md           # Sumário executivo do projeto
+├── SECURITY.md                  # Guia de segurança de credenciais
 ├── LICENSE                       # Licença MIT
 ├── requirements.txt              # Dependências (pymongo>=4.0.0)
 ├── .gitignore                   # Arquivos ignorados
-└── conexao_mongo_secrets.example.json  # Template de credenciais
+├── conexao_mongo_secrets.example.json  # Template de credenciais
+├── conexao_mongo_secrets.json   # Credenciais reais (ignorado pelo Git)
+└── dados conexão do Mongo DB.txt # Informações de conexão
 ```
 
 **Total**: ~2600+ linhas de código e documentação
@@ -131,13 +142,45 @@ Todas as funções validam `status_conexao` antes de executar.
 ✅ Coleções vazias  
 ✅ Documentos complexos (aninhados, arrays)
 
+## 📚 Documentação Adicional
+
+Este projeto inclui documentação técnica e acadêmica sobre MongoDB e o módulo de consultas:
+
+### `docs/ANALISE_CONSULTA_MONGODB.md`
+Análise técnica detalhada do script `consulta_mongodb.py`:
+- ✅ Operações já implementadas (12 tipos: Find, Aggregate, Insert, Update, Delete, etc.)
+- ⚠️ Operações que faltam (Find and Modify, Replace, operações atômicas)
+- 📋 Sugestões de melhorias e expansões futuras
+- 🔍 Comparação entre operações de leitura e escrita
+
+**Uso**: Consulte este documento para entender a evolução do módulo e planejar novas funcionalidades.
+
+### `docs/Artigo_MongoDB_eBay_ABNT.txt`
+Artigo acadêmico em formato ABNT sobre o uso do MongoDB no eBay:
+- 🏢 Estudo de caso real de aplicação em escala global
+- 🔧 Arquitetura de dados com persistência poliglota
+- ⚡ Desafios de alta disponibilidade e baixa latência
+- 📊 Replica sets, sharding e multi-datacenter
+- 🎓 Fundamentação teórica: Teorema CAP, BASE vs ACID
+
+**Uso**: Material de referência para compreender aplicações reais de MongoDB em produção.
+
+### `dados conexão do Mongo DB.txt`
+⚠️ **ARQUIVO SENSÍVEL** - Informações de conexão do MongoDB Atlas:
+- ID da organização e database
+- Credenciais de usuário (username/password)
+- Chaves de API (pública/privada)
+- Client ID e Client Secret da conta de serviço
+
+**Segurança**: Este arquivo contém credenciais REAIS. Mantenha-o local e nunca faça commit no Git.
+
 ## 🔐 Segurança
 
 ### Proteção de Credenciais
 - ✅ Credenciais em arquivo separado (`conexao_mongo_secrets.json`)
 - ✅ Arquivo de credenciais no `.gitignore`
 - ✅ Template de exemplo fornecido (sem dados sensíveis)
-- ⚠️ Nunca commitar `conexao_mongo_secrets.json`
+- ⚠️ Nunca commitar `conexao_mongo_secrets.json` ou `dados conexão do Mongo DB.txt`
 
 ### Operações Permitidas
 - ✅ find, aggregate, distinct, count, find_one

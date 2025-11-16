@@ -1,0 +1,59 @@
+1 INTRODUÇÃO
+O eBay é uma das maiores plataformas de comércio eletrônico do mundo, operando em escala global com milhões de acessos simultâneos e bilhões de registros. Nesse contexto, a arquitetura de dados é um fator crítico para garantir disponibilidade contínua, baixa latência e resiliência a falhas. Historicamente, a empresa utilizou predominantemente SGBDRs (como Oracle e MySQL). Contudo, a necessidade de escala horizontal, flexibilidade de esquema e tolerância a falhas levou à adoção do MongoDB dentro de uma estratégia de persistência poliglota.
+
+Este artigo apresenta um estudo de caso sobre a utilização do MongoDB no eBay, explorando os motivos estratégicos para sua adoção, os detalhes de arquitetura, os serviços beneficiados, os principais desafios enfrentados e as lições práticas. O foco é exclusivamente o eBay, sem tratar de outros fornecedores ou plataformas.
+
+2 JUSTIFICATIVA
+A justificativa para a adoção do MongoDB pelo eBay se sustenta em três dimensões:
+- Prática: um segundo de indisponibilidade implica perdas financeiras e danos à confiança do usuário. O MongoDB contribui para alta disponibilidade por meio de replica sets, failover automático, sharding e leitura distribuída, reduzindo MTTR (tempo médio de recuperação) em cenários de falha de hardware.
+- Acadêmica: o caso permite compreender a convivência de modelos relacionais (ACID) e não relacionais (BASE) em sistemas distribuídos, à luz do teorema CAP e da evolução recente do MongoDB, que passou a oferecer transações ACID multi-documento e, em clusters particionados, suporte transacional distribuído.
+- Estratégica: a persistência poliglota aloca cada tipo de dado ao mecanismo mais adequado. O MongoDB não substitui integralmente os SGBDRs; ele complementa o portfólio tecnológico, atendendo aplicações com dados dinâmicos, grande volume de leituras/escritas e necessidade de evolução rápida de esquema.
+
+3 O PROJETO
+A incorporação do MongoDB no eBay abrangeu múltiplos serviços críticos, com ênfase em baixa latência e escalabilidade global:
+- Sugestões de busca: listas de autocompletar e recomendações são servidas com índices por prefixo e dados em memória, respondendo em torno de 1,4 ms nas consultas mais comuns, algo impraticável com JOINs complexos em um SGBDR convencional.
+- Catálogo de produtos: documentos ricos (BSON) agregam atributos heterogêneos por SKU, reduzindo a necessidade de junções. Réplicas (até 50 membros por replica set) distribuem leituras maciças e aumentam a resiliência.
+- Carrinho de compras e sessões: documentos compactos e orientados a acesso rápido atendem a picos de escrita e leitura. Em cenários que exigem consistência forte transacional, o ecossistema relacional continua sendo utilizado de forma complementar.
+- Metadados e conteúdo dinâmico: a ausência de esquema rígido acelera a inclusão de novos campos e variações, reduzindo a necessidade de migrações dispendiosas.
+
+Arquitetura e operação:
+- Multi-data center: replica sets distribuídos entre diferentes regiões garantem quorum e eleição automática de primário diante de falhas regionais.
+- Sharding e zoneamento: particionamento por chaves e zonas de afinidade reduz latência geográfica e permite writes/reads locais com consistência global configurável.
+- Engenharia de confiabilidade: padronização de monitoramento, automação de operações (provisionamento, criação de índices, upgrades) e observabilidade para milhares de instâncias.
+
+4 OS DESAFIOS
+A adoção do MongoDB em escala global trouxe desafios relevantes:
+- Consistência eventual: leituras em réplicas secundárias podem estar defasadas; serviços sensíveis exigem estratégias de leitura consistente, recomputações eventuais ou rotas para o primário.
+- Tráfego de replicação e rebalanceamento: sincronização contínua entre data centers e movimentação de chunks em shards demandam planejamento de rede, janelas controladas e políticas de balanceamento.
+- Mudança cultural e de modelagem: equipes habituadas a normalização e JOINs precisaram dominar embedding, desnormalização e MQL, além de padrões de indexação específicos.
+- Operação em larga escala: gerenciar milhares de instâncias requer automação robusta para versionamento, tuning, auditoria e segurança.
+
+5 COMPARAÇÃO SGBDR VS NoSQL
+Comparação prática entre um SGBDR (p. ex., Oracle) e o MongoDB no contexto do eBay:
+- Estrutura de dados: SGBDR usa tabelas com esquema rígido; MongoDB usa documentos BSON com esquema flexível (schema-on-read).
+- Escalabilidade: SGBDR tende à escalabilidade vertical; MongoDB privilegia escalabilidade horizontal com sharding e réplica distribuída.
+- Consistência e transações: SGBDRs oferecem ACID clássico; MongoDB evoluiu para suportar transações ACID multi-documento e, a partir de versões recentes, transações distribuídas em clusters particionados.
+- Operações: relações exigem JOINs complexos no SQL; no MongoDB, dados relacionados podem ser agregados em um único documento (embedding), reduzindo o custo de junções em leitura.
+- Casos de uso: SGBDR permanece indicado para integridade referencial complexa e legados críticos; MongoDB atende catálogos, buscas de baixa latência, perfis, sessões e metadados mutáveis.
+
+6 LIMITAÇÕES
+Entre as limitações observadas no uso do MongoDB no eBay:
+- Consistência eventual em réplicas de leitura, exigindo cautela em serviços sensíveis ao último estado confirmado.
+- Sobrecarga operacional para administrar topologias extensas (réplicas, shards, múltiplos data centers) e orquestrar upgrades/índices com mínimo impacto.
+- Custos de memória e armazenamento devido à desnormalização e à manutenção de índices amplos para workloads de leitura intensa.
+- Maturidade histórica de transações (mitigada nas versões recentes), ainda demandando modelagem cuidadosa e tuning em cenários de alto throughput transacional.
+- Limites práticos (como número máximo de membros no replica set) que impõem planejamento de quorum, afinidade geográfica e políticas de eleição.
+
+7 CONSIDERAÇÕES FINAIS
+O caso do eBay demonstra que o MongoDB deixou de ser uma tecnologia experimental e tornou-se um pilar operacional para aplicações de missão crítica com requisitos de baixa latência, flexibilidade de dados e disponibilidade global. Em uma arquitetura poliglota, o MongoDB complementa os SGBDRs, otimizando custo, desempenho e tempo de resposta para cargas centradas em leitura e dados semiestruturados.
+
+A adoção bem-sucedida exige engenharia de confiabilidade, governança de dados, capacitação de equipes e boas práticas de modelagem e indexação. A evolução do suporte a transações ACID ampliou o escopo de uso do MongoDB, aproximando os mundos relacional e não relacional. Para profissionais e acadêmicos, compreender esses trade-offs é essencial para projetar sistemas distribuídos resilientes e eficazes.
+
+8 REFERÊNCIAS
+- MONGODB. eBay: Building Mission-Critical Multi-Data Center Applications with MongoDB. Disponível em: <https://www.mongodb.com/resources/products/capabilities/ebay-building-mission-critical-multi-data-center-applications-with-mongodb>. Acesso em: 28 set. 2025.
+- EBAY. Creating High-Quality Staging Data with a NoSQL Data Migration System. Disponível em: <https://innovation.ebayinc.com/stories/creating-high-quality-staging-data-with-a-nosql-data-migration-system/>. Acesso em: 28 set. 2025.
+- EBAY. How eBay's Shopping Cart used compression techniques to solve network I/O bottlenecks. Disponível em: <https://innovation.ebayinc.com/stories/how-ebays-shopping-cart-used-compression-techniques-to-solve-network-io-bottlenecks/>. Acesso em: 28 set. 2025.
+- MONGODB. MongoDB's ACID Transaction Guarantee. Disponível em: <https://www.mongodb.com/products/capabilities/transactions>. Acesso em: 28 set. 2025.
+- AWS. Qual é a diferença entre um banco de dados ACID e um BASE? Disponível em: <https://aws.amazon.com/pt/compare/the-difference-between-acid-and-base-database/>. Acesso em: 28 set. 2025.
+- ABOUZAID, Ahmed. CAP Theorem vs. ACID: Can MongoDB and Couchbase Have It All? Medium, 2019. Disponível em: <https://medium.com/@aabouzaid96/cap-theorem-vs-acid-can-mongodb-and-couchbase-have-it-all-6810bb18e327>. Acesso em: 28 set. 2025.
+- MORPHEUS DATA. How eBay Solves the Database Scaling Problem with MongoDB. Disponível em: <https://morpheusdata.com/how-ebay-solves-the-database-scaling-problem-with-mongodb/>. Acesso em: 28 set. 2025.

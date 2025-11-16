@@ -407,22 +407,29 @@ else:
 ```
 MongoDB_interface/
 ├── src/
-│   ├── conexao_mongodb.py      # Gerenciamento de conexões
-│   └── consulta_mongodb.py     # Operações de consulta
+│   ├── __init__.py                   # Pacote Python
+│   ├── conexao_mongodb.py            # Gerenciamento de conexões
+│   └── consulta_mongodb.py           # Operações de consulta
 ├── tests/
 │   ├── teste_consulta_mongodb.py     # Testes de queries (15+ casos)
 │   ├── teste_listar_estrutura.py     # Testes de metadados (10+ casos)
 │   └── teste_analisar_schema.py      # Testes de análise de schema
 ├── data/
 │   ├── README.md                     # Documentação dos datasets
-│   └── g1_marcha_policiais_sp.json   # Dataset de exemplo (~3000 docs)
+│   ├── g1_marcha_policiais_sp.json   # Dataset de exemplo (~3000 docs)
+│   └── Criacao_bases_mongo_cloud.ipynb  # Notebook de criação de bases
 ├── docs/
-│   └── (documentação adicional)
+│   ├── ANALISE_CONSULTA_MONGODB.md   # Análise técnica do módulo
+│   └── Artigo_MongoDB_eBay_ABNT.txt  # Artigo acadêmico
 ├── .gitignore
 ├── requirements.txt
 ├── conexao_mongo_secrets.example.json
+├── conexao_mongo_secrets.json        # Credenciais (não commitado)
+├── dados conexão do Mongo DB.txt     # Informações de conexão
 ├── SECURITY.md                        # Guia de segurança
 ├── CONTRIBUTING.md                    # Guia de contribuição
+├── PROJECT_SUMMARY.md                 # Sumário executivo
+├── GITHUB_SETUP.md                    # Guia de publicação
 ├── LICENSE
 └── README.md
 ```

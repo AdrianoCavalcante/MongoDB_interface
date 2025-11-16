@@ -84,7 +84,18 @@ Edite `conexao_mongo_secrets.json` com suas informações:
 }
 ```
 
-> ⚠️ **IMPORTANTE**: Nunca faça commit do arquivo `conexao_mongo_secrets.json` (já está no .gitignore)
+### 3. Verifique a segurança
+
+```bash
+# IMPORTANTE: Confirme que o arquivo NÃO será commitado
+git status
+# conexao_mongo_secrets.json NÃO deve aparecer na lista!
+```
+
+> ⚠️ **IMPORTANTE**: 
+> - Nunca faça commit do arquivo `conexao_mongo_secrets.json` (já protegido no .gitignore)
+> - Veja [SECURITY.md](SECURITY.md) para guia completo de segurança de credenciais
+> - Em caso de exposição acidental, troque a senha IMEDIATAMENTE no MongoDB Atlas
 
 ## 🎯 Uso Rápido
 

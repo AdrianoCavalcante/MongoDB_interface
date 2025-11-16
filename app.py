@@ -117,18 +117,28 @@ with tab1:
                 
                 if dados["sucesso"]:
                     st.success(f"✅ Consulta executada com sucesso!")
-                    st.metric("Documentos retornados", len(dados["dados"]))
                     
-                    # Mostrar dados
-                    st.json(dados["dados"])
-                    
-                    # Botão de download
-                    st.download_button(
-                        "📥 Baixar JSON",
-                        data=json.dumps(dados["dados"], indent=2, ensure_ascii=False),
-                        file_name=f"{banco}_{colecao}_resultado.json",
-                        mime="application/json"
-                    )
+                    # Verificar se é Count ou consulta normal
+                    if "contagem" in dados:
+                        # Resultado de Count
+                        st.metric("Total de documentos", dados["contagem"])
+                    elif "dados" in dados:
+                        # Resultado de Find, Aggregate, Distinct, etc.
+                        st.metric("Documentos retornados", len(dados["dados"]))
+                        
+                        # Mostrar dados
+                        st.json(dados["dados"])
+                        
+                        # Botão de download
+                        st.download_button(
+                            "📥 Baixar JSON",
+                            data=json.dumps(dados["dados"], indent=2, ensure_ascii=False),
+                            file_name=f"{banco}_{colecao}_resultado.json",
+                            mime="application/json"
+                        )
+                    else:
+                        st.warning("Resultado retornado, mas formato desconhecido.")
+                        st.json(dados)
                 else:
                     st.error(f"❌ Erro: {dados['erro']['mensagem']}")
 

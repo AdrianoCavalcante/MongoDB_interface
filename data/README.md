@@ -8,6 +8,26 @@ Este diretório contém datasets de exemplo usados para testes e demonstrações
 
 **Descrição**: Dataset com notícias do portal G1 sobre a marcha de policiais em São Paulo.
 
+### `Exemplos_de_consultas.md`
+
+**Descrição**: Guia completo com exemplos de consultas MongoDB organizados por tipo de operação.
+
+**Conteúdo**:
+- 📋 Exemplos de **Find** (busca simples)
+- 📊 Exemplos de **Aggregate** (agregação e $lookup)
+- 🔍 Exemplos de **Distinct** (valores únicos)
+- 🔢 Exemplos de **Count** (contagem)
+- 📄 Exemplos de **Find One** (buscar um documento)
+- 🎯 Exemplos de **Find com Opções** (busca avançada)
+- ✅ Análise de **Pontos Positivos** do MongoDB
+- ⚠️ Análise de **Pontos Negativos** do MongoDB
+
+**Uso**: Consulte este arquivo para exemplos práticos de queries baseadas nos schemas reais das coleções `jornalistas` e `noticias_g1`.
+
+---
+
+### `g1_marcha_policiais_sp.json`
+
 **Estrutura**:
 - **Formato**: JSON (Array de objetos)
 - **Quantidade**: ~3000 documentos

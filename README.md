@@ -12,6 +12,7 @@ Interface simplificada e segura para consultas MongoDB Atlas usando Python. Proj
 - [Instalação](#-instalação)
 - [Configuração](#-configuração)
 - [Uso Rápido](#-uso-rápido)
+- [Interface Streamlit](#-interface-streamlit)
 - [Funções Disponíveis](#-funções-disponíveis)
 - [Exemplos Avançados](#-exemplos-avançados)
 - [Arquitetura](#-arquitetura)
@@ -30,6 +31,8 @@ Interface simplificada e segura para consultas MongoDB Atlas usando Python. Proj
 - ✅ **Type Hints**: Código totalmente tipado para melhor IDE support
 - ✅ **Documentação Completa**: Docstrings detalhadas em todas as funções
 - ✅ **Testes Abrangentes**: 25+ casos de teste cobrindo todos os cenários
+- ✅ **Conversão Automática de Datas**: Strings YYYY-MM-DD convertidas para datetime
+- ✅ **Suporte a Streamlit**: Integração com secrets do Streamlit Cloud
 
 ## 🚀 Instalação
 
@@ -134,6 +137,47 @@ else:
 status_conexao, msg = desconectar_mongodb(client)
 print(f"✅ {msg}")
 ```
+
+## 🌐 Interface Streamlit
+
+O projeto inclui uma interface web interativa construída com Streamlit (`app.py`).
+
+### Executar Localmente
+
+```bash
+streamlit run app.py
+```
+
+### Recursos da Interface
+
+- 🔌 **Gestão de Conexão**: Conectar/desconectar do MongoDB Atlas
+- 📊 **Executor de Consultas**: Executar queries com exemplos pré-definidos
+- 🗂️ **Explorador de Banco**: Navegar por bancos e coleções
+- 🔍 **Analisador de Schema**: Visualizar estrutura das coleções
+- 📖 **Guia de Uso**: Documentação integrada
+
+### Deploy no Streamlit Cloud
+
+1. Configure os secrets em **Settings → Secrets**:
+```toml
+[default]
+username = "seu_usuario"
+password = "sua_senha"
+cluster = "cluster0.xxxxx.mongodb.net"
+database = "seu_banco"
+```
+
+2. A aplicação detecta automaticamente se está rodando no Streamlit Cloud e usa os secrets configurados.
+
+### Exemplos de Consultas
+
+A interface inclui exemplos prontos baseados em `data/Exemplos_de_consultas.md`:
+- Find (busca simples)
+- Aggregate (agregação com $lookup)
+- Distinct (valores únicos)
+- Count (contagem)
+- Find One (buscar um documento)
+- Find com Opções (busca avançada)
 
 ## 📚 Funções Disponíveis
 
@@ -413,14 +457,21 @@ MongoDB_interface/
 ├── tests/
 │   ├── teste_consulta_mongodb.py     # Testes de queries (15+ casos)
 │   ├── teste_listar_estrutura.py     # Testes de metadados (10+ casos)
-│   └── teste_analisar_schema.py      # Testes de análise de schema
+│   ├── teste_analisar_schema.py      # Testes de análise de schema
+│   ├── test_consulta_data.py         # Testes de conversão de datas
+│   └── test_lookup_jornalistas.py    # Testes de agregação com lookup
 ├── data/
 │   ├── README.md                     # Documentação dos datasets
 │   ├── g1_marcha_policiais_sp.json   # Dataset de exemplo (~3000 docs)
+│   ├── Exemplos_de_consultas.md      # Guia de exemplos de queries
 │   └── Criacao_bases_mongo_cloud.ipynb  # Notebook de criação de bases
 ├── docs/
 │   ├── ANALISE_CONSULTA_MONGODB.md   # Análise técnica do módulo
 │   └── Artigo_MongoDB_eBay_ABNT.txt  # Artigo acadêmico
+├── .streamlit/
+│   ├── config.toml                   # Configurações do Streamlit
+│   └── secrets.toml                  # Template de secrets
+├── app.py                             # Interface web Streamlit
 ├── .gitignore
 ├── requirements.txt
 ├── conexao_mongo_secrets.example.json
@@ -470,6 +521,12 @@ python tests/teste_listar_estrutura.py
 
 # Teste de análise de schema
 python tests/teste_analisar_schema.py
+
+# Teste de conversão de datas
+python tests/test_consulta_data.py
+
+# Teste de agregação com lookup
+python tests/test_lookup_jornalistas.py
 ```
 
 ### Cobertura de Testes
@@ -498,6 +555,17 @@ python tests/teste_analisar_schema.py
 - ✅ Campos aninhados
 - ✅ Arrays e objetos complexos
 - ✅ Coleções vazias
+
+**test_consulta_data.py**:
+- ✅ Conversão automática de datas em queries
+- ✅ Suporte a operadores de comparação ($gte, $lte, $gt, $lt, $eq)
+- ✅ Queries com múltiplos campos de data
+- ✅ Validação de formato YYYY-MM-DD
+
+**test_lookup_jornalistas.py**:
+- ✅ Aggregate com $lookup (JOIN entre coleções)
+- ✅ Agregação com grouping e sorting
+- ✅ Validação de resultados consistentes
 
 ## 🤝 Contribuindo
 
